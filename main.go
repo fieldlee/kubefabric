@@ -30,16 +30,16 @@ func main() {
 			ShowKube()
 			break
 		case "create":
-			CreateKube()
-			ListKube()
+			CreateKubeDeployment()
+			ListKubeDeployment()
 			break
 		case "update":
-			UpdateKube()
-			ListKube()
+			UpdateKubeDeployment()
+			ListKubeDeployment()
 			break
 		case "delete":
-			DeleteKube()
-			ListKube()
+			DeleteKubeDeployment()
+			ListKubeDeployment()
 			break
 		}
 		return nil
@@ -49,7 +49,22 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	CreateNS()
 }
+
+func CreateNS(){
+	kubeClient := kubeutils.InitClient()
+	err := kubeClient.CreateNamespace("test-namespace")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	//err = kubeClient.DelelteNamespace("test-namespace")
+	//if err != nil {
+	//	fmt.Println(err.Error())
+	//}
+}
+
 
 func ShowKube(){
 	kubeClient := kubeutils.InitClient()
@@ -66,7 +81,7 @@ func ShowKube(){
 		fmt.Printf("node name :%s node type:%s \n",node.Name,node.Kind)
 	}
 }
-func CreateKube(){
+func CreateKubeDeployment(){
 	kubeClient := kubeutils.InitClient()
 	deployment,err := kubeClient.CreateDeployment()
 	if err != nil {
@@ -74,14 +89,14 @@ func CreateKube(){
 	}
 	fmt.Println(deployment.Namespace,deployment.Name)
 }
-func UpdateKube(){
+func UpdateKubeDeployment(){
 	kubeClient := kubeutils.InitClient()
 	err := kubeClient.UpdateDeployment("demo-deployment")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 }
-func ListKube(){
+func ListKubeDeployment(){
 	kubeClient := kubeutils.InitClient()
 	listDeployment,err := kubeClient.ListDeployment()
 	if err != nil {
@@ -91,7 +106,7 @@ func ListKube(){
 		fmt.Println(deploy.Namespace,deploy.Name)
 	}
 }
-func DeleteKube(){
+func DeleteKubeDeployment(){
 	kubeClient := kubeutils.InitClient()
 	err := kubeClient.DeleteDeployment("demo-deployment")
 	if err != nil {
