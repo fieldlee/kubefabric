@@ -30,11 +30,10 @@ import (
 //Port: 8888,
 //},
 //},
-func (k *KubeClient)CreateService(namespace,svcName string,selector map[string]string,port int)(*apiv1.Service,error){
+func (k *KubeClient)CreateServiceByPort(namespace,svcName string,selector map[string]string,port,nodeport int)(*apiv1.Service,error){
 	sinter := k.Client.CoreV1().Services(namespace)
 	svccon := &apiv1.Service{
 		ObjectMeta:	metav1.ObjectMeta{
-			Namespace:namespace,
 			Name:svcName,
 		},
 		Spec:apiv1.ServiceSpec{
@@ -46,7 +45,74 @@ func (k *KubeClient)CreateService(namespace,svcName string,selector map[string]s
 					Port:       int32(port),
 					TargetPort: intstr.FromInt(port),
 					Protocol:   "TCP",
-					// NodePort:   32107,
+					NodePort:   int32(nodeport),
+				},
+			},
+		},
+	}
+
+	svc,err := sinter.Create(svccon)
+	if err != nil {
+		return nil,err
+	}
+	return svc, nil
+}
+
+func (k *KubeClient)CreateServiceByIP(namespace,svcName string,selector map[string]string,port int)(*apiv1.Service,error){
+	sinter := k.Client.CoreV1().Services(namespace)
+	svccon := &apiv1.Service{
+		ObjectMeta:	metav1.ObjectMeta{
+			Name:svcName,
+		},
+		Spec:apiv1.ServiceSpec{
+			Type:apiv1.ServiceTypeClusterIP,
+			Selector:selector,
+			Ports:[]apiv1.ServicePort{
+				{
+					Name:       svcName,
+					Port:       int32(port),
+					TargetPort: intstr.FromInt(port),
+					Protocol:   "TCP",
+					//NodePort:   int32(nodeport),
+				},
+			},
+		},
+	}
+
+	svc,err := sinter.Create(svccon)
+	if err != nil {
+		return nil,err
+	}
+	return svc, nil
+}
+
+func (k *KubeClient)CreateServiceLoadBalancer(namespace,svcName string,selector map[string]string,port int)(*apiv1.Service,error){
+	sinter := k.Client.CoreV1().Services(namespace)
+	svccon := &apiv1.Service{
+		ObjectMeta:	metav1.ObjectMeta{
+			Name:svcName,
+		},
+		Spec:apiv1.ServiceSpec{
+			Type:apiv1.ServiceTypeClusterIP,
+			Selector:selector,
+			LoadBalancerIP:"",
+			Ports:[]apiv1.ServicePort{
+				{
+					Name:       svcName,
+					Port:       int32(port),
+					TargetPort: intstr.FromInt(port),
+					Protocol:   "TCP",
+					//NodePort:   int32(nodeport),
+				},
+			},
+		},
+		Status:apiv1.ServiceStatus{
+			LoadBalancer:apiv1.LoadBalancerStatus{
+				Ingress:[]apiv1.LoadBalancerIngress{
+					{
+						IP:"",
+						Hostname:"",
+					},
 				},
 			},
 		},
