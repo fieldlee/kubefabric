@@ -1,9 +1,11 @@
 package kubeutils
 import (
+	"errors"
 	"fmt"
 	apiv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 //
 //volume, errGo := uuid.NewRandom()
@@ -76,6 +78,32 @@ func (k *KubeClient)CreatePv(namespace,pvName,server string,path string )(*apiv1
 	return persistent, nil
 }
 
+func (k *KubeClient)WatchPv(namespace,pvName string)(int,error){
+	pv := k.Client.CoreV1().PersistentVolumes()
+	winter,err := pv.Watch(metav1.ListOptions{})
+	if err != nil {
+		return 0,err
+	}
+	select {
+	case wr := <- winter.ResultChan():
+		switch wr.Type {
+		case watch.Added:
+			fmt.Println(wr.Object)
+			return 1,nil
+		case watch.Error:
+			fmt.Println(wr.Object)
+			return 0,errors.New("create pv err")
+		case watch.Deleted:
+			fmt.Println(wr.Object)
+			return -1,nil
+		case watch.Modified:
+			fmt.Println(wr.Object)
+			return 1,nil
+		}
+	}
+	return 0,nil
+}
+
 func (k *KubeClient)UpdatePv(pvName string)(*apiv1.PersistentVolume,error){
 	pv := k.Client.CoreV1().PersistentVolumes()
 	pvconfig, err := pv.Get(pvName,metav1.GetOptions{})
@@ -111,7 +139,7 @@ func (k *KubeClient)DeletePv(namespace,pvName string)error{
 }
 
 func (k *KubeClient)CreatePVC(namespace string,pvName string,label map[string]string)(*apiv1.PersistentVolumeClaim,error){
-	storage := "slow"
+	storage := "standard"
 	volumeMode := apiv1.PersistentVolumeFilesystem
 	pvcInter := k.Client.CoreV1().PersistentVolumeClaims(namespace)
 	pvcment  := &apiv1.PersistentVolumeClaim{
@@ -122,7 +150,15 @@ func (k *KubeClient)CreatePVC(namespace string,pvName string,label map[string]st
 			AccessModes: []apiv1.PersistentVolumeAccessMode{apiv1.ReadWriteOnce},
 			VolumeMode : &volumeMode,
 			StorageClassName:&storage,
-			VolumeName:"",
+			Resources:apiv1.ResourceRequirements{
+				Limits:apiv1.ResourceList{
+					apiv1.ResourceName(apiv1.ResourceStorage):resource.MustParse("10Gi"),
+				},
+				Requests:apiv1.ResourceList{
+					apiv1.ResourceName(apiv1.ResourceStorage):resource.MustParse("10Gi"),
+				},
+			},
+			VolumeName:pvName,
 			Selector: &metav1.LabelSelector{
 				MatchLabels:label,
 			},
@@ -134,6 +170,32 @@ func (k *KubeClient)CreatePVC(namespace string,pvName string,label map[string]st
 		return nil,err
 	}
 	return persistent,nil
+}
+
+func (k *KubeClient)WatchPvc(namespace string)(int,error){
+	pvc := k.Client.CoreV1().PersistentVolumeClaims(namespace)
+	winter,err := pvc.Watch(metav1.ListOptions{})
+	if err != nil {
+		return 0,err
+	}
+	select {
+	case wr := <- winter.ResultChan():
+		switch wr.Type {
+		case watch.Added:
+			fmt.Println(wr.Object)
+			return 1,nil
+		case watch.Error:
+			fmt.Println(wr.Object)
+			return 0,errors.New("create pvc err")
+		case watch.Deleted:
+			fmt.Println(wr.Object)
+			return -1,nil
+		case watch.Modified:
+			fmt.Println(wr.Object)
+			return 1,nil
+		}
+	}
+	return 0,nil
 }
 
 func (k *KubeClient)UpdatePvc(namespace string,pvcname string)(*apiv1.PersistentVolumeClaim,error){

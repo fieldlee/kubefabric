@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9e7b5ce4-055f-4578-a5fe-0fdcf2fe3ca5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/kubeutils/ingress.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/ingress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kubeutils/node.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/node.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kubeutils/pod.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/pod.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubeutils/deployment.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/deployment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubeutils/namespace.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/namespace.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubeutils/pvc.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/pvc.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kubeutils/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeutils/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
@@ -17,13 +17,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-528">
-              <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
+            <state relative-caret-position="336">
+              <caret line="76" column="15" selection-start-line="76" selection-start-column="15" selection-end-line="76" selection-end-column="15" />
               <folding>
                 <element signature="e#14#93#0" expanded="true" />
+                <element signature="n#!!block;n#DeleteNS#0" />
+                <element signature="n#!!block;n#CreatePvc#0" />
+                <element signature="n#!!block;n#DeletePv#0" />
+                <element signature="n#!!block;n#CreatePvc#1" />
               </folding>
             </state>
           </provider>
@@ -33,19 +37,31 @@
         <entry file="file://$PROJECT_DIR$/kubeutils/pvc.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="5" column="49" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="49" />
+              <caret line="174" selection-start-line="174" selection-end-line="198" selection-end-column="1" />
+              <folding>
+                <element signature="e#18#150#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/kubeutils/deployment.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="582">
+              <caret line="101" column="50" selection-start-line="101" selection-start-column="50" selection-end-line="101" selection-end-column="50" />
+              <folding>
+                <element signature="e#19#160#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubeutils/deployment.go">
+        <entry file="file://$PROJECT_DIR$/vendor/k8s.io/api/core/v1/types.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="6" column="49" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="49" />
-              <folding>
-                <element signature="e#489#1089#0" />
-              </folding>
+            <state relative-caret-position="547">
+              <caret line="581" column="16" selection-start-line="581" selection-start-column="4" selection-end-line="581" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -53,7 +69,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubeutils/pod.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
+            <state relative-caret-position="720">
               <caret line="61" selection-start-line="61" selection-end-line="61" />
               <folding>
                 <element signature="e#19#99#0" expanded="true" />
@@ -65,8 +81,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubeutils/namespace.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="912">
-              <caret line="38" column="14" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
+            <state relative-caret-position="96">
+              <caret line="44" column="63" selection-start-line="44" selection-start-column="52" selection-end-line="44" selection-end-column="63" />
               <folding>
                 <element signature="e#18#149#0" expanded="true" />
               </folding>
@@ -75,10 +91,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/vendor/k8s.io/apimachinery/pkg/watch/watch.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="384">
+              <caret line="16" column="13" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubeutils/service.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-504">
-              <caret line="6" column="41" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="41" />
+            <state relative-caret-position="696">
+              <caret line="152" column="1" lean-forward="true" selection-start-line="128" selection-end-line="152" selection-end-column="1" />
+              <folding>
+                <element signature="e#18#150#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -87,7 +115,7 @@
         <entry file="file://$PROJECT_DIR$/vendor/k8s.io/client-go/kubernetes/typed/extensions/v1beta1/ingress.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="792">
-              <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+              <caret line="42" selection-start-line="42" selection-end-line="42" />
             </state>
           </provider>
         </entry>
@@ -96,19 +124,10 @@
         <entry file="file://$PROJECT_DIR$/kubeutils/ingress.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1824">
-              <caret line="94" column="1" lean-forward="true" selection-start-line="94" selection-start-column="1" selection-end-line="94" selection-end-column="1" />
+              <caret line="94" column="1" selection-start-line="94" selection-start-column="1" selection-end-line="94" selection-end-column="1" />
               <folding>
                 <element signature="e#19#106#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubeutils/node.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="19" selection-start-line="19" selection-end-line="19" />
             </state>
           </provider>
         </entry>
@@ -135,15 +154,15 @@
         <option value="$PROJECT_DIR$/k8s/kubeConfig.go" />
         <option value="$PROJECT_DIR$/go.mod" />
         <option value="$PROJECT_DIR$/k8s/deployment.go" />
-        <option value="$PROJECT_DIR$/kubeutils/deployment.go" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/kubeutils/pvc.go" />
-        <option value="$PROJECT_DIR$/kubeutils/namespace.go" />
         <option value="$PROJECT_DIR$/kubeutils/node.go" />
         <option value="$PROJECT_DIR$/kubeutils/pod.go" />
-        <option value="$PROJECT_DIR$/kubeutils/service.go" />
         <option value="$PROJECT_DIR$/kubeutils/ingress.go" />
+        <option value="$PROJECT_DIR$/kubeutils/namespace.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/kubeutils/pvc.go" />
+        <option value="$PROJECT_DIR$/kubeutils/service.go" />
+        <option value="$PROJECT_DIR$/kubeutils/deployment.go" />
       </list>
     </option>
   </component>
@@ -247,7 +266,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.5961755" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.5185602" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -255,7 +274,7 @@
       <window_info anchor="right" id="Database" order="3" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28451648" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17551705" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -268,7 +287,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.5961755" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.5961755" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -319,40 +338,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubeutils/pvc.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="5" column="49" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/api/core/v1/types.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="3515" column="13" selection-start-line="3515" selection-start-column="13" selection-end-line="3515" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubeutils/deployment.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="6" column="49" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="49" />
-          <folding>
-            <element signature="e#489#1089#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubeutils/namespace.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="912">
-          <caret line="38" column="14" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
-          <folding>
-            <element signature="e#18#149#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubeutils/node.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -360,9 +345,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/client-go/kubernetes/typed/extensions/v1beta1/ingress.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="792">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeutils/ingress.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1824">
+          <caret line="94" column="1" selection-start-line="94" selection-start-column="1" selection-end-line="94" selection-end-column="1" />
+          <folding>
+            <element signature="e#19#106#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/api/core/v1/types.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="581" column="16" selection-start-line="581" selection-start-column="4" selection-end-line="581" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/kubeutils/pod.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
+        <state relative-caret-position="720">
           <caret line="61" selection-start-line="61" selection-end-line="61" />
           <folding>
             <element signature="e#19#99#0" expanded="true" />
@@ -370,36 +379,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/client-go/kubernetes/typed/extensions/v1beta1/ingress.go">
+    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/apimachinery/pkg/watch/watch.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubeutils/service.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-504">
-          <caret line="6" column="41" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubeutils/ingress.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1824">
-          <caret line="94" column="1" lean-forward="true" selection-start-line="94" selection-start-column="1" selection-end-line="94" selection-end-column="1" />
-          <folding>
-            <element signature="e#19#106#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="384">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-528">
-          <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
+        <state relative-caret-position="336">
+          <caret line="76" column="15" selection-start-line="76" selection-start-column="15" selection-end-line="76" selection-end-column="15" />
           <folding>
             <element signature="e#14#93#0" expanded="true" />
+            <element signature="n#!!block;n#DeleteNS#0" />
+            <element signature="n#!!block;n#CreatePvc#0" />
+            <element signature="n#!!block;n#DeletePv#0" />
+            <element signature="n#!!block;n#CreatePvc#1" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeutils/namespace.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="44" column="63" selection-start-line="44" selection-start-column="52" selection-end-line="44" selection-end-column="63" />
+          <folding>
+            <element signature="e#18#149#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeutils/pvc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="174" selection-start-line="174" selection-end-line="198" selection-end-column="1" />
+          <folding>
+            <element signature="e#18#150#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeutils/service.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="696">
+          <caret line="152" column="1" lean-forward="true" selection-start-line="128" selection-end-line="152" selection-end-column="1" />
+          <folding>
+            <element signature="e#18#150#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeutils/deployment.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="582">
+          <caret line="101" column="50" selection-start-line="101" selection-start-column="50" selection-end-line="101" selection-end-column="50" />
+          <folding>
+            <element signature="e#19#160#0" expanded="true" />
           </folding>
         </state>
       </provider>

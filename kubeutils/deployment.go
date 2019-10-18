@@ -1,51 +1,78 @@
 package kubeutils
 
 import (
+	"errors"
 	"fmt"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 	"kubefabric/utils"
 )
-func (k *KubeClient)CreateDeployment()(*appsv1.Deployment,error){
+func (k *KubeClient)CreateDeployment(namespace,deployname,imagename,volumnname,volumnpath,pvcname string,replicanum,port int)(*appsv1.Deployment,error){
 
-	deploymentsClient := k.Client.AppsV1().Deployments(apiv1.NamespaceDefault)
+	//hostPathType := apiv1.HostPathFile
+
+	deploymentsClient := k.Client.AppsV1().Deployments(namespace)
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "demo-deployment",
+			Name: deployname,
+			Namespace:namespace,
 			Labels: map[string]string{
-				"app":"demo",
+				"app":deployname,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: utils.Int32Ptr(2),
+			Replicas: utils.Int32Ptr(int32(replicanum)),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": "demo",
+					"app": deployname,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": "demo",
+						"app": deployname,
 					},
 				},
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
-							Name:  "web",
-							Image: "nginx:1.12",
+							Name:  deployname,
+							Image: imagename,
 							Ports: []apiv1.ContainerPort{
 								{
 									Name:          "http",
 									Protocol:      apiv1.ProtocolTCP,
-									ContainerPort: 80,
+									ContainerPort: int32(port),
 								},
+							},
+							VolumeMounts:[]apiv1.VolumeMount{
+									{
+										Name:volumnname,
+										MountPath:volumnpath,
+									},
 							},
 						},
 					},
+					Volumes:[]apiv1.Volume{
+						{
+							Name:volumnname,
+							VolumeSource:apiv1.VolumeSource{
+								//HostPath:&apiv1.HostPathVolumeSource{
+								//	Path:"",
+								//	Type: &hostPathType,
+								//},
+								PersistentVolumeClaim:&apiv1.PersistentVolumeClaimVolumeSource{
+									ClaimName:pvcname,
+								},
+							},
+
+						},
+					},
 				},
+
 			},
 		},
 	}
@@ -56,6 +83,32 @@ func (k *KubeClient)CreateDeployment()(*appsv1.Deployment,error){
 	}
 	fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
 	return result,nil
+}
+
+func (k *KubeClient)WatchDeploy(namespace string)(int,error){
+	wdeploy := k.Client.AppsV1().Deployments(namespace)
+	winter,err := wdeploy.Watch(metav1.ListOptions{})
+	if err != nil {
+		return 0,err
+	}
+	select {
+	case wr := <- winter.ResultChan():
+		switch wr.Type {
+		case watch.Added:
+			fmt.Println(wr.Object)
+			return 1,nil
+		case watch.Error:
+			fmt.Println(wr.Object)
+			return 0,errors.New("create deployment err")
+		case watch.Deleted:
+			fmt.Println(wr.Object)
+			return -1,nil
+		case watch.Modified:
+			fmt.Println(wr.Object)
+			return 1,nil
+		}
+	}
+	return 0,nil
 }
 
 func (k *KubeClient)ListDeployment()([]appsv1.Deployment, error){
@@ -88,9 +141,9 @@ func (k *KubeClient)UpdateDeployment(deploymentName string)error{
 	return nil
 }
 
-func (k *KubeClient)DeleteDeployment(deploymentName string)error{
+func (k *KubeClient)DeleteDeployment(namespace,deploymentName string)error{
 	deletePolicy := metav1.DeletePropagationForeground
-	deploymentsClient := k.Client.AppsV1().Deployments(apiv1.NamespaceDefault)
+	deploymentsClient := k.Client.AppsV1().Deployments(namespace)
 	if err := deploymentsClient.Delete(deploymentName, &metav1.DeleteOptions{
 		PropagationPolicy: &deletePolicy,
 	}); err != nil {
