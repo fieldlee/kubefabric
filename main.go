@@ -61,21 +61,64 @@ func main() {
 	pvname := "rabbitmq-nfs-pv"
 	pvcname := "rabbitmq-nfs-pvc"
 	deployname := "rabbitmq-depl"
-	//DeleteNS(namespace)
-	//DeletePv(namespace,pvname)
-	//DeletePvc(namespace,pvcname)
-	//DeleteService(namespace,servicename)
-	//DeleteDeployment(namespace,deployname)
+	ingressname := "rabbitmq-ingress"
 
-	CreateNS(namespace)
-	time.Sleep(20*time.Second)
-	CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
-	time.Sleep(20*time.Second)
-	CreatePvc(namespace,pvname,pvcname)
-	time.Sleep(20*time.Second)
-	CreateService(namespace,servicename,deployname,5672,30672)
-	time.Sleep(20*time.Second)
-	CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/opt/nfs/data/rabbitmq/",pvcname,5672)
+	DeleteIngress(namespace,ingressname)
+	time.Sleep(10*time.Second)
+	DeleteDeployment(namespace,deployname)
+	time.Sleep(10*time.Second)
+	DeleteService(namespace,servicename)
+	time.Sleep(10*time.Second)
+	DeletePvc(namespace,pvcname)
+	time.Sleep(10*time.Second)
+	DeletePv(namespace,pvname)
+	time.Sleep(10*time.Second)
+	DeleteNS(namespace)
+
+	//CreateNS(namespace)
+	//time.Sleep(20*time.Second)
+	//CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
+	//time.Sleep(20*time.Second)
+	//CreatePvc(namespace,pvcname)
+	//time.Sleep(20*time.Second)
+	//CreateService(namespace,servicename,deployname,5672,30672)
+	//time.Sleep(10*time.Second)
+	//CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
+	//time.Sleep(10*time.Second)
+	//CreateIngress(namespace,ingressname,servicename,5672)
+
+}
+
+
+func CreateIngress(namespace,ingName,svcname string,port int){
+	kubeClient := kubeutils.InitClient()
+	_,err := kubeClient.CreateIngress(namespace,ingName,svcname,"field.lee.com","/rabbit",port)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	result ,err := kubeClient.WatchIngress(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	switch result {
+	case 1 :
+		fmt.Println("创建Ingress完成")
+	case -1 :
+		fmt.Println("删除Ingress完成")
+	case 0:
+		fmt.Println("错误Ingress")
+	default:
+		fmt.Println("Ingress=====")
+	}
+}
+
+func DeleteIngress(namespace,ingName string){
+	kubeClient := kubeutils.InitClient()
+	err := kubeClient.DeleteIngress(namespace,ingName)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func CreateNS(namespace string){
@@ -92,13 +135,13 @@ func CreateNS(namespace string){
 
 	switch result {
 	case 1 :
-		fmt.Println("创建完成")
+		fmt.Println("创建Namespace完成")
 	case -1 :
-		fmt.Println("删除完成")
+		fmt.Println("删除Namespace完成")
 	case 0:
-		fmt.Println("错误")
+		fmt.Println("错误Namespace")
 	default:
-		fmt.Println("=====")
+		fmt.Println("Namespace=====")
 	}
 }
 
@@ -107,6 +150,20 @@ func DeleteNS(namespace string){
 	err := kubeClient.DelelteNamespace(namespace)
 	if err != nil {
 		fmt.Println(err.Error())
+	}
+	result ,err := kubeClient.WatchNamespace(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Namespace完成")
+	case -1 :
+		fmt.Println("删除Namespace完成")
+	case 0:
+		fmt.Println("错误Namespace")
+	default:
+		fmt.Println("Namespace=====")
 	}
 }
 
@@ -117,6 +174,21 @@ func CreatePv(namespace,pvname,serverip,path string){
 		fmt.Println(err.Error())
 	}
 	fmt.Println(pv)
+
+	result ,err := kubeClient.WatchPv(namespace,pvname)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建PV完成")
+	case -1 :
+		fmt.Println("删除PV完成")
+	case 0:
+		fmt.Println("错误PV")
+	default:
+		fmt.Println("PV=====")
+	}
 }
 
 func DeletePv(namespace,pvname string){
@@ -125,16 +197,43 @@ func DeletePv(namespace,pvname string){
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	result ,err := kubeClient.WatchPv(namespace,pvname)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建PV完成")
+	case -1 :
+		fmt.Println("删除PV完成")
+	case 0:
+		fmt.Println("错误PV")
+	default:
+		fmt.Println("PV=====")
+	}
 }
 
-func CreatePvc(namespace,pvname,pvcname string){
+func CreatePvc(namespace,pvcname string){
 	kubeClient := kubeutils.InitClient()
-	pv,err := kubeClient.CreatePVC(namespace,pvname, map[string]string{"app":pvcname})
+	pv,err := kubeClient.CreatePVC(namespace,pvcname, map[string]string{"app":pvcname})
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(pv)
-
+	result ,err := kubeClient.WatchPvc(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建PVC完成")
+	case -1 :
+		fmt.Println("删除PVC完成")
+	case 0:
+		fmt.Println("错误PVC")
+	default:
+		fmt.Println("PVC=====")
+	}
 }
 
 func DeletePvc(namespace,pvcname string){
@@ -143,6 +242,20 @@ func DeletePvc(namespace,pvcname string){
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	result ,err := kubeClient.WatchPvc(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建PVC完成")
+	case -1 :
+		fmt.Println("删除PVC完成")
+	case 0:
+		fmt.Println("错误PVC")
+	default:
+		fmt.Println("PVC=====")
+	}
 }
 
 func CreateService(namespace,svcname,appname string,port,nodeport int){
@@ -150,11 +263,25 @@ func CreateService(namespace,svcname,appname string,port,nodeport int){
 	selector := map[string]string{
 		"app":appname,
 	}
-	svc,err := kubeClient.CreateServiceByPort(namespace,svcname,selector,port,nodeport)
+	svc,err := kubeClient.CreateServiceByIP(namespace,svcname,selector,port)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(svc)
+	result ,err := kubeClient.WatchService(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Service完成")
+	case -1 :
+		fmt.Println("删除Service完成")
+	case 0:
+		fmt.Println("错误Service")
+	default:
+		fmt.Println("Service=====")
+	}
 }
 
 func DeleteService(namespace,svcname string){
@@ -162,6 +289,20 @@ func DeleteService(namespace,svcname string){
 	err := kubeClient.DeleteService(namespace,svcname)
 	if err != nil {
 		fmt.Println(err.Error())
+	}
+	result ,err := kubeClient.WatchService(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Service完成")
+	case -1 :
+		fmt.Println("删除Service完成")
+	case 0:
+		fmt.Println("错误Service")
+	default:
+		fmt.Println("Service=====")
 	}
 }
 
@@ -172,6 +313,20 @@ func CreateDeployment(namespace ,deployname,imagename,volumnname,volumnpath,pvcn
 		fmt.Println(err.Error())
 	}
 	fmt.Println(vdeploy)
+	result ,err := kubeClient.WatchDeploy(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Deployment完成")
+	case -1 :
+		fmt.Println("删除Deployment完成")
+	case 0:
+		fmt.Println("错误Deployment")
+	default:
+		fmt.Println("Deployment=====")
+	}
 }
 
 func DeleteDeployment(namespace ,deployname string){
@@ -179,6 +334,20 @@ func DeleteDeployment(namespace ,deployname string){
 	err := kubeClient.DeleteDeployment(namespace ,deployname)
 	if err != nil {
 		fmt.Println(err.Error())
+	}
+	result ,err := kubeClient.WatchDeploy(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Deployment完成")
+	case -1 :
+		fmt.Println("删除Deployment完成")
+	case 0:
+		fmt.Println("错误Deployment")
+	default:
+		fmt.Println("Deployment=====")
 	}
 }
 

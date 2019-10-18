@@ -138,30 +138,27 @@ func (k *KubeClient)DeletePv(namespace,pvName string)error{
 	return nil
 }
 
-func (k *KubeClient)CreatePVC(namespace string,pvName string,label map[string]string)(*apiv1.PersistentVolumeClaim,error){
-	storage := "standard"
+func (k *KubeClient)CreatePVC(namespace string,pvcName string,label map[string]string)(*apiv1.PersistentVolumeClaim,error){
+	//storage := "standard"
 	volumeMode := apiv1.PersistentVolumeFilesystem
 	pvcInter := k.Client.CoreV1().PersistentVolumeClaims(namespace)
 	pvcment  := &apiv1.PersistentVolumeClaim{
 		ObjectMeta:metav1.ObjectMeta{
-			Name: pvName,
+			Name: pvcName,
 		},
 		Spec:apiv1.PersistentVolumeClaimSpec{
-			AccessModes: []apiv1.PersistentVolumeAccessMode{apiv1.ReadWriteOnce},
+			AccessModes: []apiv1.PersistentVolumeAccessMode{apiv1.ReadWriteMany},
 			VolumeMode : &volumeMode,
-			StorageClassName:&storage,
+			//StorageClassName:&storage,
 			Resources:apiv1.ResourceRequirements{
-				Limits:apiv1.ResourceList{
-					apiv1.ResourceName(apiv1.ResourceStorage):resource.MustParse("10Gi"),
-				},
 				Requests:apiv1.ResourceList{
 					apiv1.ResourceName(apiv1.ResourceStorage):resource.MustParse("10Gi"),
 				},
 			},
-			VolumeName:pvName,
-			Selector: &metav1.LabelSelector{
-				MatchLabels:label,
-			},
+			//VolumeName:pvcName,
+			//Selector: &metav1.LabelSelector{
+			//	MatchLabels:label,
+			//},
 		},
 	}
 

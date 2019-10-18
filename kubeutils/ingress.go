@@ -1,10 +1,12 @@
 package kubeutils
 
 import (
-
+	"errors"
+	"fmt"
 	"k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 ////声明ingress对象
@@ -24,33 +26,33 @@ import (
 //watchInterface, err := clientset.ExtensionsV1beta1().Ingresses(<namespace>).Watch(&meta_v1.ListOptions{})
 
 
-func (k *KubeClient)CreateIngress(namespace,ingname string)(*v1beta1.Ingress,error){
+func (k *KubeClient)CreateIngress(namespace,ingname,svcname,host,path string,port int)(*v1beta1.Ingress,error){
 	svcIng:=k.Client.ExtensionsV1beta1().Ingresses(namespace)
 	svcCon := &v1beta1.Ingress{
 		ObjectMeta:metav1.ObjectMeta{
 			Name:ingname,
 		},
 		Spec:v1beta1.IngressSpec{
-			Backend:&v1beta1.IngressBackend{
-				ServiceName:"",
-				ServicePort:intstr.FromInt(100),
-			},
-			TLS:[]v1beta1.IngressTLS{
-				{
-
-				},
-			},
+			//Backend:&v1beta1.IngressBackend{
+			//	ServiceName:svcname,
+			//	ServicePort:intstr.FromInt(port),
+			//},
+			//TLS:[]v1beta1.IngressTLS{
+			//	{
+			//
+			//	},
+			//},
 			Rules:[]v1beta1.IngressRule{
 				{
-					Host:"",
+					Host:host,
 					IngressRuleValue:v1beta1.IngressRuleValue{
 						HTTP:&v1beta1.HTTPIngressRuleValue{
 							Paths:[]v1beta1.HTTPIngressPath{
 								{
-									Path:"",
+									Path:path,
 									Backend:v1beta1.IngressBackend{
-										ServiceName:"",
-										ServicePort:intstr.FromInt(100),
+										ServiceName:svcname,
+										ServicePort:intstr.FromInt(port),
 									},
 								},
 							},
@@ -92,4 +94,30 @@ func (k *KubeClient)ListIngress(namespace,name string)([]v1beta1.Ingress,error){
 		return nil,err
 	}
 	return ingress.Items,nil
+}
+
+func (k *KubeClient)WatchIngress(namespace string)(int,error){
+	ingINter := k.Client.ExtensionsV1beta1().Ingresses(namespace)
+	watchInter ,err := ingINter.Watch(metav1.ListOptions{})
+	if err != nil {
+		return 0, err
+	}
+	select {
+	case wr := <- watchInter.ResultChan():
+		switch wr.Type {
+		case watch.Added:
+			fmt.Println(wr.Object)
+			return 1,nil
+		case watch.Error:
+			fmt.Println(wr.Object)
+			return 0,errors.New("create ingress err")
+		case watch.Deleted:
+			fmt.Println(wr.Object)
+			return -1,nil
+		case watch.Modified:
+			fmt.Println(wr.Object)
+			return 1,nil
+		}
+	}
+	return 0,nil
 }
