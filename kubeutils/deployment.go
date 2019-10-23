@@ -41,6 +41,13 @@ func (k *KubeClient)CreateDeployment(namespace,deployname,imagename,volumnname,v
 						{
 							Name:  deployname,
 							Image: imagename,
+							Command:[]string{},
+							Env:[]apiv1.EnvVar{
+								{
+									Name:"",
+									Value:"",
+								},
+							},
 							Ports: []apiv1.ContainerPort{
 								{
 									Name:          "http",

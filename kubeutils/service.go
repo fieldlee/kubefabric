@@ -46,7 +46,7 @@ func (k *KubeClient)CreateServiceByPort(namespace,svcName string,selector map[st
 					Name:       svcName,
 					Port:       int32(port),
 					TargetPort: intstr.FromInt(port),
-					Protocol:   "TCP",
+					Protocol:   apiv1.ProtocolTCP,
 					NodePort:   int32(nodeport),
 				},
 			},
@@ -68,6 +68,7 @@ func (k *KubeClient)CreateServiceByIP(namespace,svcName string,selector map[stri
 		},
 		Spec:apiv1.ServiceSpec{
 			Type:apiv1.ServiceTypeClusterIP,
+
 			Selector:selector,
 			Ports:[]apiv1.ServicePort{
 				{

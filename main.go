@@ -58,34 +58,34 @@ func main() {
 	//CreatePvc()
 	namespace := "shared-services"
 	servicename := "rabbitmq-nfs-poc-svc"
-	pvname := "rabbitmq-nfs-pv"
+	//pvname := "rabbitmq-nfs-pv"
 	pvcname := "rabbitmq-nfs-pvc"
 	deployname := "rabbitmq-depl"
 	ingressname := "rabbitmq-ingress"
 
-	DeleteIngress(namespace,ingressname)
-	time.Sleep(10*time.Second)
-	DeleteDeployment(namespace,deployname)
-	time.Sleep(10*time.Second)
-	DeleteService(namespace,servicename)
-	time.Sleep(10*time.Second)
-	DeletePvc(namespace,pvcname)
-	time.Sleep(10*time.Second)
-	DeletePv(namespace,pvname)
-	time.Sleep(10*time.Second)
-	DeleteNS(namespace)
+	//DeleteIngress(namespace,ingressname)
+	//time.Sleep(10*time.Second)
+	//DeleteDeployment(namespace,deployname)
+	//time.Sleep(10*time.Second)
+	//DeleteService(namespace,servicename)
+	//time.Sleep(10*time.Second)
+	//DeletePvc(namespace,pvcname)
+	//time.Sleep(10*time.Second)
+	//DeletePv(namespace,pvname)
+	//time.Sleep(10*time.Second)
+	//DeleteNS(namespace)
 
 	//CreateNS(namespace)
 	//time.Sleep(20*time.Second)
 	//CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
 	//time.Sleep(20*time.Second)
 	//CreatePvc(namespace,pvcname)
-	//time.Sleep(20*time.Second)
-	//CreateService(namespace,servicename,deployname,5672,30672)
-	//time.Sleep(10*time.Second)
-	//CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
-	//time.Sleep(10*time.Second)
-	//CreateIngress(namespace,ingressname,servicename,5672)
+	time.Sleep(20*time.Second)
+	CreateService(namespace,servicename,deployname,5672,30672)
+	time.Sleep(20*time.Second)
+	CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
+	time.Sleep(20*time.Second)
+	CreateIngress(namespace,ingressname,servicename,30672)
 
 }
 
@@ -263,7 +263,7 @@ func CreateService(namespace,svcname,appname string,port,nodeport int){
 	selector := map[string]string{
 		"app":appname,
 	}
-	svc,err := kubeClient.CreateServiceByIP(namespace,svcname,selector,port)
+	svc,err := kubeClient.CreateServiceByPort(namespace,svcname,selector,port,nodeport)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
