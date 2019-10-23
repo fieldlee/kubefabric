@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli"
+	"kubefabric/env"
 	"kubefabric/kubeutils"
 	"time"
 
@@ -53,15 +54,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//CreateNS()
-	//CreatePv()
-	//CreatePvc()
+
 	namespace := "shared-services"
 	servicename := "rabbitmq-nfs-poc-svc"
-	//pvname := "rabbitmq-nfs-pv"
+	pvname := "rabbitmq-nfs-pv"
 	pvcname := "rabbitmq-nfs-pvc"
 	deployname := "rabbitmq-depl"
-	ingressname := "rabbitmq-ingress"
+	//ingressname := "rabbitmq-ingress"
 
 	//DeleteIngress(namespace,ingressname)
 	//time.Sleep(10*time.Second)
@@ -75,17 +74,19 @@ func main() {
 	//time.Sleep(10*time.Second)
 	//DeleteNS(namespace)
 
-	//CreateNS(namespace)
-	//time.Sleep(20*time.Second)
-	//CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
-	//time.Sleep(20*time.Second)
-	//CreatePvc(namespace,pvcname)
+	CreateNS(namespace)
 	time.Sleep(20*time.Second)
+	CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
+	time.Sleep(20*time.Second)
+	CreatePvc(namespace,pvcname)
+	time.Sleep(20*time.Second)
+
 	CreateService(namespace,servicename,deployname,5672,30672)
-	time.Sleep(20*time.Second)
-	CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
-	time.Sleep(20*time.Second)
-	CreateIngress(namespace,ingressname,servicename,30672)
+	//time.Sleep(20*time.Second)
+	//CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
+	//time.Sleep(20*time.Second)
+	//CreateIngress(namespace,ingressname,servicename,30672)
+
 
 }
 
@@ -263,7 +264,16 @@ func CreateService(namespace,svcname,appname string,port,nodeport int){
 	selector := map[string]string{
 		"app":appname,
 	}
-	svc,err := kubeClient.CreateServiceByPort(namespace,svcname,selector,port,nodeport)
+	service := kubeutils.ServiceInfo{
+		Namespace:namespace,
+		ServiceName:svcname,
+		Selector: selector,
+		Port:port,
+		Nodeport:nodeport,
+	}
+
+
+	svc,err := kubeClient.CreateServiceByPort(service)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -308,7 +318,24 @@ func DeleteService(namespace,svcname string){
 
 func CreateDeployment(namespace ,deployname,imagename,volumnname,volumnpath,pvcname string,port int){
 	kubeClient := kubeutils.InitClient()
-	vdeploy,err := kubeClient.CreateDeployment(namespace,deployname,imagename,volumnname,volumnpath,pvcname,1,port)
+
+	//envlist := make([]apiv1.EnvVar,0)
+
+	envlist := env.GenerateEnv("env_fabric_peer","./")
+
+	deployment := kubeutils.DeploymentInfo{
+		Namespace:namespace,
+		DeploymentName:deployname,
+		ImageName:imagename,
+		VolumnName:volumnname,
+		VolumnPath:volumnpath,
+		PVCName:pvcname,
+		ReplicaNum:1,
+		Port:port,
+		//Command:[]string{},
+	}
+
+	vdeploy,err := kubeClient.CreateDeployment(deployment,envlist)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

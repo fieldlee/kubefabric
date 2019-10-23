@@ -9,70 +9,77 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"kubefabric/utils"
 )
-func (k *KubeClient)CreateDeployment(namespace,deployname,imagename,volumnname,volumnpath,pvcname string,replicanum,port int)(*appsv1.Deployment,error){
+
+type DeploymentInfo struct {
+	Namespace string
+	DeploymentName string
+	ImageName string
+	VolumnName string
+	VolumnPath string
+	PVCName string
+	ReplicaNum int
+	Port int
+	Command []string
+}
+
+func (k *KubeClient)CreateDeployment(deployment DeploymentInfo,envVarList []apiv1.EnvVar)(*appsv1.Deployment,error){
 
 	//hostPathType := apiv1.HostPathFile
 
-	deploymentsClient := k.Client.AppsV1().Deployments(namespace)
+	deploymentsClient := k.Client.AppsV1().Deployments(deployment.Namespace)
 
-	deployment := &appsv1.Deployment{
+	deploymentObj := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: deployname,
-			Namespace:namespace,
+			Name: deployment.DeploymentName,
 			Labels: map[string]string{
-				"app":deployname,
+				"app":deployment.DeploymentName,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: utils.Int32Ptr(int32(replicanum)),
+			Replicas: utils.Int32Ptr(int32(deployment.ReplicaNum)),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": deployname,
+					"app": deployment.DeploymentName,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": deployname,
+						"app": deployment.DeploymentName,
 					},
 				},
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
-							Name:  deployname,
-							Image: imagename,
-							Command:[]string{},
-							Env:[]apiv1.EnvVar{
-								{
-									Name:"",
-									Value:"",
-								},
-							},
-							Ports: []apiv1.ContainerPort{
+							Name:  	deployment.DeploymentName,
+							Image: 	deployment.ImageName,
+							Command:deployment.Command,
+							Env:	envVarList,
+							Ports:  []apiv1.ContainerPort{
 								{
 									Name:          "http",
 									Protocol:      apiv1.ProtocolTCP,
-									ContainerPort: int32(port),
+									ContainerPort: int32(deployment.Port),
 								},
 							},
 							VolumeMounts:[]apiv1.VolumeMount{
 									{
-										Name:volumnname,
-										MountPath:volumnpath,
+										Name:deployment.VolumnName,
+										MountPath:deployment.VolumnPath,
 									},
 							},
 						},
 					},
 					Volumes:[]apiv1.Volume{
 						{
-							Name:volumnname,
+							Name:deployment.VolumnName,
 							VolumeSource:apiv1.VolumeSource{
 								//HostPath:&apiv1.HostPathVolumeSource{
 								//	Path:"",
 								//	Type: &hostPathType,
 								//},
 								PersistentVolumeClaim:&apiv1.PersistentVolumeClaimVolumeSource{
-									ClaimName:pvcname,
+									ClaimName:deployment.PVCName,
 								},
 							},
 
@@ -84,7 +91,7 @@ func (k *KubeClient)CreateDeployment(namespace,deployname,imagename,volumnname,v
 		},
 	}
 
-	result, err := deploymentsClient.Create(deployment)
+	result, err := deploymentsClient.Create(deploymentObj)
 	if err != nil {
 		return nil,err
 	}

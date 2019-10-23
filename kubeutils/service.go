@@ -32,22 +32,33 @@ import (
 //Port: 8888,
 //},
 //},
-func (k *KubeClient)CreateServiceByPort(namespace,svcName string,selector map[string]string,port,nodeport int)(*apiv1.Service,error){
-	sinter := k.Client.CoreV1().Services(namespace)
+
+
+type ServiceInfo struct {
+	Namespace string
+	ServiceName string
+	Selector map[string]string
+	Port int
+	Nodeport int
+	BalanceIp string
+}
+
+func (k *KubeClient)CreateServiceByPort(service ServiceInfo)(*apiv1.Service,error){
+	sinter := k.Client.CoreV1().Services(service.Namespace)
 	svccon := &apiv1.Service{
 		ObjectMeta:	metav1.ObjectMeta{
-			Name:svcName,
+			Name:service.ServiceName,
 		},
 		Spec:apiv1.ServiceSpec{
 			Type:apiv1.ServiceTypeNodePort,
-			Selector:selector,
+			Selector:service.Selector,
 			Ports:[]apiv1.ServicePort{
 				{
-					Name:       svcName,
-					Port:       int32(port),
-					TargetPort: intstr.FromInt(port),
+					Name:       service.ServiceName,
+					Port:       int32(service.Port),
+					TargetPort: intstr.FromInt(service.Port),
 					Protocol:   apiv1.ProtocolTCP,
-					NodePort:   int32(nodeport),
+					NodePort:   int32(service.Nodeport),
 				},
 			},
 		},
@@ -60,21 +71,21 @@ func (k *KubeClient)CreateServiceByPort(namespace,svcName string,selector map[st
 	return svc, nil
 }
 
-func (k *KubeClient)CreateServiceByIP(namespace,svcName string,selector map[string]string,port int)(*apiv1.Service,error){
-	sinter := k.Client.CoreV1().Services(namespace)
+func (k *KubeClient)CreateServiceByIP(service ServiceInfo)(*apiv1.Service,error){
+	sinter := k.Client.CoreV1().Services(service.Namespace)
 	svccon := &apiv1.Service{
 		ObjectMeta:	metav1.ObjectMeta{
-			Name:svcName,
+			Name:service.ServiceName,
 		},
 		Spec:apiv1.ServiceSpec{
 			Type:apiv1.ServiceTypeClusterIP,
 
-			Selector:selector,
+			Selector:service.Selector,
 			Ports:[]apiv1.ServicePort{
 				{
-					Name:       svcName,
-					Port:       int32(port),
-					TargetPort: intstr.FromInt(port),
+					Name:       service.ServiceName,
+					Port:       int32(service.Port),
+					TargetPort: intstr.FromInt(service.Port),
 					Protocol:   "TCP",
 					//NodePort:   int32(nodeport),
 				},
@@ -89,21 +100,21 @@ func (k *KubeClient)CreateServiceByIP(namespace,svcName string,selector map[stri
 	return svc, nil
 }
 
-func (k *KubeClient)CreateServiceLoadBalancer(namespace,svcName string,selector map[string]string,port int)(*apiv1.Service,error){
-	sinter := k.Client.CoreV1().Services(namespace)
+func (k *KubeClient)CreateServiceLoadBalancer(service ServiceInfo)(*apiv1.Service,error){
+	sinter := k.Client.CoreV1().Services(service.Namespace)
 	svccon := &apiv1.Service{
 		ObjectMeta:	metav1.ObjectMeta{
-			Name:svcName,
+			Name:service.ServiceName,
 		},
 		Spec:apiv1.ServiceSpec{
 			Type:apiv1.ServiceTypeClusterIP,
-			Selector:selector,
-			LoadBalancerIP:"",
+			Selector:service.Selector,
+			LoadBalancerIP:service.BalanceIp,
 			Ports:[]apiv1.ServicePort{
 				{
-					Name:       svcName,
-					Port:       int32(port),
-					TargetPort: intstr.FromInt(port),
+					Name:       service.ServiceName,
+					Port:       int32(service.Port),
+					TargetPort: intstr.FromInt(service.Port),
 					Protocol:   "TCP",
 					//NodePort:   int32(nodeport),
 				},
