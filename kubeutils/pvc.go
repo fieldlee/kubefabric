@@ -7,53 +7,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 )
-//
-//volume, errGo := uuid.NewRandom()
-//if errGo != nil {
-//job.failed = kv.Wrap(errGo).With("stack", stack.Trace().TrimRuntime())
-//return job.failed
-//}
-//job.volume = volume.String()
-//
-//fs := v1.PersistentVolumeFilesystem
-//createOpts := &v1.PersistentVolumeClaim{
-//ObjectMeta: metav1.ObjectMeta{
-//Name:      job.volume,
-//Namespace: job.namespace,
-//UID:       types.UID(job.volume),
-//},
-//Spec: v1.PersistentVolumeClaimSpec{
-//AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
-//Resources: v1.ResourceRequirements{
-//Requests: v1.ResourceList{
-//v1.ResourceName(v1.ResourceStorage): resource.MustParse("10Gi"),
-//},
-//},
-//VolumeName: job.volume,
-//VolumeMode: &fs,
-//},
-//Status: v1.PersistentVolumeClaimStatus{
-//Phase:       v1.ClaimBound,
-//AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
-//Capacity: v1.ResourceList{
-//v1.ResourceName(v1.ResourceStorage): resource.MustParse("10Gi"),
-//},
-//},
-//}
-//
-//api := Client().CoreV1()
-//if _, errGo = api.PersistentVolumeClaims(namespace).Create(createOpts); errGo != nil {
-//job.failed = kv.Wrap(errGo).With("stack", stack.Trace().TrimRuntime())
-//return job.failed
-//}
 
-func (k *KubeClient)CreatePv(namespace,pvName,server string,path string )(*apiv1.PersistentVolume,error){
+func (k *KubeClient)CreatePv(pvName,labelname,server string,path string )(*apiv1.PersistentVolume,error){
 
 	pv := k.Client.CoreV1().PersistentVolumes()
 	pvment := &apiv1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: pvName,
-			Namespace:namespace,
+			Labels: map[string]string{
+				"type":"local",
+				"name":labelname,
+			},
 		},
 		Spec: apiv1.PersistentVolumeSpec{
 			PersistentVolumeReclaimPolicy:apiv1.PersistentVolumeReclaimRecycle,
@@ -78,7 +42,7 @@ func (k *KubeClient)CreatePv(namespace,pvName,server string,path string )(*apiv1
 	return persistent, nil
 }
 
-func (k *KubeClient)WatchPv(namespace,pvName string)(int,error){
+func (k *KubeClient)WatchPv(pvName string)(int,error){
 	pv := k.Client.CoreV1().PersistentVolumes()
 	winter,err := pv.Watch(metav1.ListOptions{})
 	if err != nil {
@@ -129,7 +93,7 @@ func (k *KubeClient)GetPvList()([]apiv1.PersistentVolume, error) {
 	return pvList.Items,nil
 }
 
-func (k *KubeClient)DeletePv(namespace,pvName string)error{
+func (k *KubeClient)DeletePv(pvName string)error{
 	pv := k.Client.CoreV1().PersistentVolumes()
 	err := pv.Delete(pvName,&metav1.DeleteOptions{})
 	if err != nil {
@@ -138,7 +102,7 @@ func (k *KubeClient)DeletePv(namespace,pvName string)error{
 	return nil
 }
 
-func (k *KubeClient)CreatePVC(namespace string,pvcName string,label map[string]string)(*apiv1.PersistentVolumeClaim,error){
+func (k *KubeClient)CreatePVC(namespace,pvcName string,selectorlabel map[string]string)(*apiv1.PersistentVolumeClaim,error){
 	//storage := "standard"
 	volumeMode := apiv1.PersistentVolumeFilesystem
 	pvcInter := k.Client.CoreV1().PersistentVolumeClaims(namespace)
@@ -156,9 +120,9 @@ func (k *KubeClient)CreatePVC(namespace string,pvcName string,label map[string]s
 				},
 			},
 			//VolumeName:pvcName,
-			//Selector: &metav1.LabelSelector{
-			//	MatchLabels:label,
-			//},
+			Selector: &metav1.LabelSelector{
+				MatchLabels:selectorlabel,
+			},
 		},
 	}
 

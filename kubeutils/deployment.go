@@ -32,20 +32,20 @@ func (k *KubeClient)CreateDeployment(deployment DeploymentInfo,envVarList []apiv
 		ObjectMeta: metav1.ObjectMeta{
 			Name: deployment.DeploymentName,
 			Labels: map[string]string{
-				"app":deployment.DeploymentName,
+				"name":deployment.DeploymentName,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: utils.Int32Ptr(int32(deployment.ReplicaNum)),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": deployment.DeploymentName,
+					"name": deployment.DeploymentName,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": deployment.DeploymentName,
+						"name": deployment.DeploymentName,
 					},
 				},
 				Spec: apiv1.PodSpec{

@@ -2,94 +2,101 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
+
+
+	//"time"
+
+	//"github.com/urfave/cli"
 	"kubefabric/env"
 	"kubefabric/kubeutils"
-	"time"
-
+	//"time"
+	apiv1 "k8s.io/api/core/v1"
 	//"k8s.io/client-go/discovery"
-	"log"
-	"os"
+
 )
 
 func main() {
 
-	app := cli.NewApp()
 
-	app.Flags = []cli.Flag {
-		cli.StringFlag{
-			Name: "action",
-			Value: "show",
-			Usage: "action for kubernetes",
-		},
-	}
+/****
+  app := cli.NewApp()
 
-	app.Action = func(c *cli.Context) error {
-		name := "show"
-		if c.NArg() > 0 {
-			name = c.Args().Get(0)
-		}
-		switch name {
-		case "show":
-			ShowKube()
-			break
-		case "create":
-			//CreateKubeDeployment()
-			ListKubeDeployment()
-			break
-		case "update":
-			UpdateKubeDeployment()
-			ListKubeDeployment()
-			break
-		case "delete":
-			DeleteKubeDeployment()
-			ListKubeDeployment()
-			break
-		}
-		return nil
-	}
+  	app.Flags = []cli.Flag {
+  		cli.StringFlag{
+  			Name: "action",
+  			Value: "show",
+  			Usage: "action for kubernetes",
+  		},
+  	}
 
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
-	}
+  	app.Action = func(c *cli.Context) error {
+  		name := "show"
+  		if c.NArg() > 0 {
+  			name = c.Args().Get(0)
+  		}
+  		switch name {
+  		case "show":
+  			ShowKube()
+  			break
+  		case "create":
+  			//CreateKubeDeployment()
+  			ListKubeDeployment()
+  			break
+  		case "update":
+  			UpdateKubeDeployment()
+  			ListKubeDeployment()
+  			break
+  		case "delete":
+  			DeleteKubeDeployment()
+  			ListKubeDeployment()
+  			break
+  		}
+  		return nil
+  	}
 
+  	err := app.Run(os.Args)
+  	if err != nil {
+  		log.Fatal(err)
+  	}
 
-	namespace := "shared-services"
-	servicename := "rabbitmq-nfs-poc-svc"
-	pvname := "rabbitmq-nfs-pv"
-	pvcname := "rabbitmq-nfs-pvc"
-	deployname := "rabbitmq-depl"
-	//ingressname := "rabbitmq-ingress"
-
-	//DeleteIngress(namespace,ingressname)
-	//time.Sleep(10*time.Second)
-	//DeleteDeployment(namespace,deployname)
-	//time.Sleep(10*time.Second)
-	//DeleteService(namespace,servicename)
-	//time.Sleep(10*time.Second)
-	//DeletePvc(namespace,pvcname)
-	//time.Sleep(10*time.Second)
-	//DeletePv(namespace,pvname)
-	//time.Sleep(10*time.Second)
-	//DeleteNS(namespace)
-
-	CreateNS(namespace)
-	time.Sleep(20*time.Second)
-	CreatePv(namespace,pvname,"192.168.1.100","/opt/nfs/data/rabbitmq/")
-	time.Sleep(20*time.Second)
-	CreatePvc(namespace,pvcname)
-	time.Sleep(20*time.Second)
-
-	CreateService(namespace,servicename,deployname,5672,30672)
-	//time.Sleep(20*time.Second)
-	//CreateDeployment(namespace,deployname,"rabbitmq","rabbitmq-mnt","/var/lib/rabbitmq/",pvcname,5672)
-	//time.Sleep(20*time.Second)
-	//CreateIngress(namespace,ingressname,servicename,30672)
+ */
 
 
+	DeployFabric()
 }
 
+func DeployFabric(){
+	namespace := "blockchain-fabric"
+	//pvname := "fabric-pv"
+	//pvcname := "fabric-pvc"
+	//labelname := "fabricfiles"
+	//
+	//CreateNS(namespace)
+	//time.Sleep(10 * time.Second)
+	//
+	//CreatePv(pvname,labelname,"192.168.1.100","/opt/nfs/fabric")
+	//
+	//time.Sleep(10 * time.Second)
+	//
+	//CreatePvc(namespace,pvcname,labelname)
+	//time.Sleep(10 * time.Second)
+
+	/////CREATE FABRIC TOOL
+	//CreatePod(namespace,"fabric-tools","hyperledger/fabric-tools:latest","fabric-pvc",labelname)
+
+	//CreateCa(namespace,"blockchain-ca")
+	//CreateService(namespace,"blockchain-ca","blockchain-ca",7054,30054)
+
+	//CreateOrder(namespace,"blockchain-orderer","hyperledger/fabric-orderer:latest","fabricfiles","/fabric","fabric-pvc",7050)
+	///Delete Pod
+	DeleteDeployment(namespace,"blockchain-orderer")
+	DeleteDeployment(namespace,"blockchain-ca")
+	DeletePod(namespace,"fabric-tools")
+	DeleteService(namespace,"blockchain-ca")
+	//DeletePvc(namespace,pvcname)
+	//DeletePv(namespace,pvname)
+	//DeleteNS(namespace)
+}
 
 func CreateIngress(namespace,ingName,svcname string,port int){
 	kubeClient := kubeutils.InitClient()
@@ -168,15 +175,15 @@ func DeleteNS(namespace string){
 	}
 }
 
-func CreatePv(namespace,pvname,serverip,path string){
+func CreatePv(pvname,labelname,server,path string){
 	kubeClient := kubeutils.InitClient()
-	pv,err := kubeClient.CreatePv(namespace,pvname,serverip,path)
+	pv,err := kubeClient.CreatePv(pvname,labelname,server,path)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(pv)
 
-	result ,err := kubeClient.WatchPv(namespace,pvname)
+	result ,err := kubeClient.WatchPv(pvname)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -194,11 +201,11 @@ func CreatePv(namespace,pvname,serverip,path string){
 
 func DeletePv(namespace,pvname string){
 	kubeClient := kubeutils.InitClient()
-	err := kubeClient.DeletePv(namespace,pvname)
+	err := kubeClient.DeletePv(pvname)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	result ,err := kubeClient.WatchPv(namespace,pvname)
+	result ,err := kubeClient.WatchPv(pvname)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -214,9 +221,9 @@ func DeletePv(namespace,pvname string){
 	}
 }
 
-func CreatePvc(namespace,pvcname string){
+func CreatePvc(namespace,pvcname ,labelname string){
 	kubeClient := kubeutils.InitClient()
-	pv,err := kubeClient.CreatePVC(namespace,pvcname, map[string]string{"app":pvcname})
+	pv,err := kubeClient.CreatePVC(namespace,pvcname, map[string]string{"name":labelname})
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -259,10 +266,119 @@ func DeletePvc(namespace,pvcname string){
 	}
 }
 
+func CreatePod(namespace,podname,imagename,pvcname,labelname string){
+	kubeClient := kubeutils.InitClient()
+	VolList := make([]apiv1.Volume,0)
+	fabricVolume := apiv1.Volume{
+		Name:labelname,
+		VolumeSource:apiv1.VolumeSource{
+			PersistentVolumeClaim:&apiv1.PersistentVolumeClaimVolumeSource{
+				ClaimName:pvcname,
+			},
+		},
+	}
+
+	dockersocket := apiv1.Volume{
+		Name:"dockersocket",
+		VolumeSource:apiv1.VolumeSource{
+			HostPath:&apiv1.HostPathVolumeSource{
+				Path:"/var/run/docker.sock",
+			},
+		},
+	}
+	VolList = append(VolList,fabricVolume,dockersocket)
+
+	EnvList := make([]apiv1.EnvVar,0)
+
+	path := apiv1.EnvVar{
+		Name:"FABRIC_CFG_PATH",
+		Value:"/fabric",
+	}
+	EnvList = append(EnvList,path)
+
+	VolMounts := make([]apiv1.VolumeMount,0)
+
+	volmount1 := apiv1.VolumeMount{
+		Name:"fabricfiles",
+		MountPath:"/fabric",
+	}
+	volmount2 := apiv1.VolumeMount{
+		Name:"dockersocket",
+		MountPath:"/host/var/run/docker.sock",
+	}
+	VolMounts = append(VolMounts,volmount1,volmount2)
+
+	podinfo := kubeutils.PodInfo{
+		Namespace:namespace,
+		PodName:podname,
+		ImageName:imagename,
+		Volumes:VolList,
+		Command:[]string{"sh", "-c", "sleep 48h"},
+		Env:EnvList,
+		VolumeMounts:VolMounts,
+	}
+
+	err := kubeClient.CreatePod(podinfo)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("Pod error: %s",err.Error()))
+	}
+
+	result,err := kubeClient.WatchPod(namespace,podname)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("Pod Watch error: %s",err.Error()))
+	}
+	fmt.Println(fmt.Sprintf("Pod Watch result: %d",result))
+}
+
+func DeletePod(namespace,podname string){
+	kubeClient := kubeutils.InitClient()
+	err := kubeClient.DeletePod(namespace,podname)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
+func CreateCa(namespace,deployname string){
+	kubeClient := kubeutils.InitClient()
+	envlist := env.GenerateEnv("env_ca","./env/")
+	deployment := kubeutils.DeploymentInfo{
+		Namespace:namespace,
+		DeploymentName:deployname,
+		ImageName:"hyperledger/fabric-ca:latest",
+		VolumnName:"fabricfiles",
+		VolumnPath:"/fabric",
+		PVCName:"fabric-pvc",
+		ReplicaNum:1,
+		Port:7054,
+		Command:[]string{"sh", "-c", "fabric-ca-server start -b admin:adminpw -d"},
+	}
+	deploy,err := kubeClient.CreateDeployment(deployment,envlist)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(deploy)
+
+	result ,err := kubeClient.WatchDeploy(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建ca完成")
+	case -1 :
+		fmt.Println("删除ca完成")
+	case 0:
+		fmt.Println("错误ca")
+	default:
+		fmt.Println("ca=====")
+	}
+}
+
+
 func CreateService(namespace,svcname,appname string,port,nodeport int){
 	kubeClient := kubeutils.InitClient()
 	selector := map[string]string{
-		"app":appname,
+		"name":appname,
 	}
 	service := kubeutils.ServiceInfo{
 		Namespace:namespace,
@@ -319,8 +435,6 @@ func DeleteService(namespace,svcname string){
 func CreateDeployment(namespace ,deployname,imagename,volumnname,volumnpath,pvcname string,port int){
 	kubeClient := kubeutils.InitClient()
 
-	//envlist := make([]apiv1.EnvVar,0)
-
 	envlist := env.GenerateEnv("env_fabric_peer","./")
 
 	deployment := kubeutils.DeploymentInfo{
@@ -332,7 +446,7 @@ func CreateDeployment(namespace ,deployname,imagename,volumnname,volumnpath,pvcn
 		PVCName:pvcname,
 		ReplicaNum:1,
 		Port:port,
-		//Command:[]string{},
+		Command:[]string{"sh", "-c", "peer node start"},
 	}
 
 	vdeploy,err := kubeClient.CreateDeployment(deployment,envlist)
@@ -355,6 +469,45 @@ func CreateDeployment(namespace ,deployname,imagename,volumnname,volumnpath,pvcn
 		fmt.Println("Deployment=====")
 	}
 }
+
+func CreateOrder(namespace ,deployname,imagename,volumnname,volumnpath,pvcname string,port int){
+	kubeClient := kubeutils.InitClient()
+
+	envlist := env.GenerateEnv("env_order","./env/")
+
+	deployment := kubeutils.DeploymentInfo{
+		Namespace:namespace,
+		DeploymentName:deployname,
+		ImageName:imagename,
+		VolumnName:volumnname,
+		VolumnPath:volumnpath,
+		PVCName:pvcname,
+		ReplicaNum:3,
+		Port:port,
+		Command:[]string{"sh", "-c", "orderer"},
+	}
+
+	vdeploy,err := kubeClient.CreateDeployment(deployment,envlist)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(vdeploy)
+	result ,err := kubeClient.WatchDeploy(namespace)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	switch result {
+	case 1 :
+		fmt.Println("创建Deployment完成")
+	case -1 :
+		fmt.Println("删除Deployment完成")
+	case 0:
+		fmt.Println("错误Deployment")
+	default:
+		fmt.Println("Deployment=====")
+	}
+}
+
 
 func DeleteDeployment(namespace ,deployname string){
 	kubeClient := kubeutils.InitClient()

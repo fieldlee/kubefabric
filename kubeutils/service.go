@@ -8,31 +8,6 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/watch"
 )
-////声明service对象
-//var service *v1.Service
-////构造service对象
-////创建service
-//service, err := clientset.CoreV1().Services(<namespace>).Create(<service>)
-////更新service
-//service, err := clientset.CoreV1().Services(<namespace>).Update(<service>)
-////删除service
-//err := clientset.CoreV1().Services(<namespace>).Delete(<service.Name>, &meta_v1.DeleteOptions{})
-////查询service
-//service, err := clientset.CoreV1().Services(<namespace>).Get(<service.Name>, &meta_v1.GetOptions{})
-////列出service
-//serviceList, err := clientset.CoreV1().Services(<namespace>).List(&meta_v1.ListOptions{})
-////watch service
-//watchInterface, err := clientset.CoreV1().Services(<namespace>).Watch(&meta_v1.ListOptions{})
-
-//Spec: v1.ServiceSpec{
-//Type:     v1.ServiceTypeNodePort,
-//Selector: pod.Labels,
-//Ports: []v1.ServicePort{
-//{
-//Port: 8888,
-//},
-//},
-
 
 type ServiceInfo struct {
 	Namespace string
