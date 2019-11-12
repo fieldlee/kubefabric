@@ -26,6 +26,7 @@ func (k KubeClient)ServiceByYaml(yamlPath string)error{
 		return err
 	}
 	////// 查询
+
 	if _,err := k.Client.CoreV1().Services(service.Namespace).Get(service.Name,meta_v1.GetOptions{});err !=nil{
 		if errors.IsNotFound(err){ ////// 创建
 			if _,err := k.Client.CoreV1().Services(service.Namespace).Create(&service);err != nil {
