@@ -21,7 +21,6 @@ func InitConfig (yamlName string,path string) *Config {
 	//设置配置文件的名字
 	Con.V.SetConfigName(yamlName)
 	//添加配置文件所在的路径,注意在Linux环境下%GOPATH要替换为$GOPATH
-
 	Con.V.AddConfigPath(path)
 	//设置配置文件类型
 	Con.V.SetConfigType("yaml")
