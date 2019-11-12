@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9e7b5ce4-055f-4578-a5fe-0fdcf2fe3ca5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/kubeyaml/deployment.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kubeyaml/kubeClient.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kubeyaml/namespace.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kubeyaml/pvc.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kubeyaml/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kubeyaml/state.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/env.go" beforeDir="false" afterPath="$PROJECT_DIR$/env/env.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubeyaml/namespace.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeyaml/namespace.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubeyaml/pvc.go" beforeDir="false" afterPath="$PROJECT_DIR$/kubeyaml/pvc.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,11 +19,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubeyaml/deployment.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="30" column="25" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="25" />
-              <folding>
-                <element signature="e#18#78#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="216">
+              <caret line="9" column="50" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -32,20 +28,47 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubeyaml/namespace.go">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="648">
+              <caret line="66" column="57" selection-start-line="66" selection-start-column="57" selection-end-line="66" selection-end-column="57" />
+              <folding>
+                <element signature="e#18#241#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubeyaml/pvc.go">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="5" column="4" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="8" selection-end-column="39" />
+              <caret line="5" column="32" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/kubeyaml/pvc.go">
+        <entry file="file://$PROJECT_DIR$/kubeyaml/service.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="69" column="22" lean-forward="true" selection-start-line="69" selection-start-column="22" selection-end-line="69" selection-end-column="22" />
-              <folding>
-                <element signature="e#18#40#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="144">
+              <caret line="6" column="39" selection-start-line="6" selection-start-column="39" selection-end-line="6" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubeyaml/state.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1146">
+              <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/vendor/k8s.io/client-go/kubernetes/typed/core/v1/persistentvolume.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="283">
+              <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -84,32 +107,6 @@
               <caret line="9" column="15" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="15" />
               <folding>
                 <element signature="e#18#122#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/utils.go">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubeutils/deployment.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-888">
-              <caret line="101" selection-start-line="101" selection-end-line="125" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubeutils/kubeConfig.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="9" selection-start-line="9" selection-end-line="33" />
-              <folding>
-                <element signature="e#19#123#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -157,6 +154,8 @@
         <option value="$PROJECT_DIR$/kubeyaml/deployment.go" />
         <option value="$PROJECT_DIR$/kubeyaml/namespace.go" />
         <option value="$PROJECT_DIR$/kubeyaml/pvc.go" />
+        <option value="$PROJECT_DIR$/kubeyaml/state.go" />
+        <option value="$PROJECT_DIR$/kubeyaml/service.go" />
       </list>
     </option>
   </component>
@@ -558,28 +557,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kubeyaml/namespace.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="5" column="4" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="8" selection-end-column="39" />
+        <state relative-caret-position="648">
+          <caret line="66" column="57" selection-start-line="66" selection-start-column="57" selection-end-line="66" selection-end-column="57" />
+          <folding>
+            <element signature="e#18#241#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubeyaml/deployment.go">
+    <entry file="file://$PROJECT_DIR$/vendor/k8s.io/client-go/kubernetes/typed/core/v1/persistentvolume.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="30" column="25" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="25" />
-          <folding>
-            <element signature="e#18#78#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="283">
+          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/kubeyaml/pvc.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="69" column="22" lean-forward="true" selection-start-line="69" selection-start-column="22" selection-end-line="69" selection-end-column="22" />
-          <folding>
-            <element signature="e#18#40#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="120">
+          <caret line="5" column="32" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeyaml/deployment.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="9" column="50" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeyaml/state.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1146">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubeyaml/service.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="6" column="39" selection-start-line="6" selection-start-column="39" selection-end-line="6" selection-end-column="39" />
         </state>
       </provider>
     </entry>

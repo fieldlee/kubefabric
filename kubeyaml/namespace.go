@@ -63,3 +63,11 @@ func (k KubeClient)ListNamespace(namespace string)(*core_v1.Namespace,error){
 		return namespace,nil
 	}
 }
+
+func (k KubeClient)DeleteNamespace(namespace string)error{
+	if err := k.Client.CoreV1().Namespaces().Delete(namespace,&meta_v1.DeleteOptions{});err != nil {
+		return err
+	}else{
+		return nil
+	}
+}
