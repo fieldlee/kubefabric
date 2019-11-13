@@ -45,3 +45,24 @@ func (k KubeClient)CreateUpdateServiceAccount(yamlPath string)error{
 		}
 	}
 }
+
+func (k KubeClient)GetServiceAccount(namespace , name string)(*core_v1.ServiceAccount,error){
+	if serviceaccount,err := k.Client.CoreV1().ServiceAccounts(namespace).Get(name,meta_v1.GetOptions{});err!=nil {
+		return nil,err
+	}else{
+		return serviceaccount,nil
+	}
+}
+
+func (k KubeClient)DeleteServiceAccount(namespace , name string)error{
+	if _,err := k.Client.CoreV1().ServiceAccounts(namespace).Get(name,meta_v1.GetOptions{});err!=nil {
+		return err
+	}else{
+		if err := k.Client.CoreV1().ServiceAccounts(namespace).Delete(name,&meta_v1.DeleteOptions{});err != nil {
+			return err
+		}else{
+			return nil
+		}
+	}
+}
+
