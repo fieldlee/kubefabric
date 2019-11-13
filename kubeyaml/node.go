@@ -49,6 +49,8 @@ func (k KubeClient)CreateUpdateNodeByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){ ////////////////// create node
 			if _,err := k.Client.CoreV1().Nodes().Create(&node);err != nil{
 				return err
+			}else{
+				return nil
 			}
 		}
 		return  err

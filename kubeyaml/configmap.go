@@ -28,6 +28,8 @@ func (k KubeClient)ConfigMapByYaml(yamlPath string) error  {
 			///////////////////创建config map
 			if _,err := k.Client.CoreV1().ConfigMaps(config.Namespace).Create(&config);err != nil {
 				return err
+			}else{
+				return nil
 			}
 		}
 		return err

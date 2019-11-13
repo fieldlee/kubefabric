@@ -30,6 +30,8 @@ func (k KubeClient)CreatePvByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){
 			if _, err := k.Client.CoreV1().PersistentVolumes().Create(&pv);err != nil {
 				return err
+			}else{
+				return nil
 			}
 		}
 		return err
@@ -101,6 +103,8 @@ func (k KubeClient)CreatePvcByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){
 			if _, err := k.Client.CoreV1().PersistentVolumeClaims(pvc.Namespace).Create(&pvc);err != nil {
 				return err
+			}else{
+				return nil
 			}
 		}
 		return err

@@ -29,7 +29,10 @@ func (k KubeClient)StatefulByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){ ////// 创建
 			if _,err := k.Client.AppsV1().StatefulSets(state.Namespace).Create(&state);err != nil {
 				return err
+			}else{
+				return nil
 			}
+
 		}
 		return err
 	}else{ ///// 更新

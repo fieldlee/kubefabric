@@ -31,6 +31,8 @@ func (k KubeClient)ServiceByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){ ////// 创建
 			if _,err := k.Client.CoreV1().Services(service.Namespace).Create(&service);err != nil {
 				return err
+			}else{
+				return nil
 			}
 		}
 		return err

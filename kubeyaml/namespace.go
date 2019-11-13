@@ -31,6 +31,8 @@ func (k KubeClient)NamespaceByYaml(yamlPath string)error{
 		if errors.IsNotFound(err){
 			if _, err := k.Client.CoreV1().Namespaces().Create(&namespace);err != nil {
 				return err
+			}else{
+				return nil
 			}
 		}
 		return err
