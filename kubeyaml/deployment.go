@@ -85,3 +85,22 @@ func (k KubeClient)ListDeployment(namespace,name string) (*apps_v1.DeploymentLis
 		return list, nil
 	}
 }
+
+func (k KubeClient)RolloutDeployment(yamlPath string)error{
+	deployYaml,err  := ioutil.ReadFile(yamlPath)
+	if err != nil {
+		return err
+	}
+
+	deploy := apps_v1.Deployment{}
+
+	deployJson , err := yaml.ToJSON(deployYaml)
+	if err != nil {
+		return err
+	}
+
+	if err = json.Unmarshal(deployJson,&deploy); err != nil {
+		return err
+	}
+
+}
