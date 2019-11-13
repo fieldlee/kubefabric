@@ -138,6 +138,7 @@ func (k KubeClient)DeletePvcByYaml(yamlPath string)error{
 	if err := json.Unmarshal(pvcJson,&pvc);err != nil {
 		return err
 	}
+
 	//////////////////////查询
 	if _, err := k.Client.CoreV1().PersistentVolumeClaims(pvc.Namespace).Get(pvc.Name,meta_v1.GetOptions{}); err != nil {
 
