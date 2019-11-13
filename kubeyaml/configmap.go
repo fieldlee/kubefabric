@@ -75,3 +75,10 @@ func (k KubeClient)DeleteConfigmap(namespace,name string)error{
 	return nil
 }
 
+func (k KubeClient)ListConfigmap(namespace string)([]core_v1.ConfigMap,error){
+	if list,err := k.Client.CoreV1().ConfigMaps(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

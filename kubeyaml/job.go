@@ -92,3 +92,11 @@ func (k KubeClient)DeleteJobByYaml(yamlPath string)error{
 		}
 	}
 }
+
+func (k KubeClient)ListJobs(namespace string)([]batch_v1.Job,error){
+	if list,err := k.Client.BatchV1().Jobs(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

@@ -78,15 +78,15 @@ func (k KubeClient)DeleteDeployment(namespace,name string)error{
 	return nil
 }
 
-func (k KubeClient)ListDeployment(namespace,name string) (*apps_v1.DeploymentList, error ){
+func (k KubeClient)ListDeployment(namespace,name string) ([]apps_v1.Deployment, error ){
 	if list,err := k.Client.AppsV1().Deployments(namespace).List(meta_v1.ListOptions{});err != nil {
 		return nil , err
 	}else{
-		return list, nil
+		return list.Items, nil
 	}
 }
 
-func (k KubeClient)RolloutDeployment(yamlPath string)error{
+/*func (k KubeClient)RolloutDeployment(yamlPath string)error{
 	deployYaml,err  := ioutil.ReadFile(yamlPath)
 	if err != nil {
 		return err
@@ -103,4 +103,4 @@ func (k KubeClient)RolloutDeployment(yamlPath string)error{
 		return err
 	}
 
-}
+}*/

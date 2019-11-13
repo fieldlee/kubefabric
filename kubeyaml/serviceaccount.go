@@ -66,3 +66,10 @@ func (k KubeClient)DeleteServiceAccount(namespace , name string)error{
 	}
 }
 
+func (k KubeClient)ListServiceAccounts(namespace string)([]core_v1.ServiceAccount,error){
+	if list,err := k.Client.CoreV1().ServiceAccounts(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

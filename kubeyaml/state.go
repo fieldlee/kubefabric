@@ -84,3 +84,11 @@ func (k KubeClient)GetStateful(namespace,name string)(*apps_v1.StatefulSet,error
 		return state, nil
 	}
 }
+
+func (k KubeClient)ListStateful(namespace string)([]apps_v1.StatefulSet,error){
+	if state,err := k.Client.AppsV1().StatefulSets(namespace).List(meta_v1.ListOptions{}); err != nil {
+		return nil,err
+	}else{
+		return state.Items, nil
+	}
+}

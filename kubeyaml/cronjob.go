@@ -93,3 +93,11 @@ func (k KubeClient)DeleteCronJobByYaml(yamlPath string)error{
 		}
 	}
 }
+
+func (k KubeClient)ListCronJobs(namespace string)([]batch_v1.CronJob,error){
+	if list,err := k.Client.BatchV1beta1().CronJobs(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

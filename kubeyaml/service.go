@@ -84,3 +84,11 @@ func (k KubeClient)GetService( namespace,name string)(*core_v1.Service,error){
 		return srv,nil
 	}
 }
+
+func (k KubeClient)ListServices(namespace string)([]core_v1.Service,error){
+	if list,err := k.Client.CoreV1().Services(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

@@ -92,3 +92,11 @@ func (k KubeClient)DeletePodByYaml(yamlPath string)error{
 		}
 	}
 }
+
+func (k KubeClient)ListPods(namespace string)([]apps_v1.Pod,error){
+	if list,err := k.Client.CoreV1().Pods(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

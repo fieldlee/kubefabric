@@ -83,3 +83,10 @@ func (k KubeClient)DeleteDaemonSetByYaml(yamlPath string)error{
 	}
 }
 
+func (k KubeClient)ListDaemonSet(namespace string)([]apps_v1.DaemonSet,error){
+	if list,err :=  k.Client.AppsV1().DaemonSets(namespace).List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}

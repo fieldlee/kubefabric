@@ -58,7 +58,7 @@ func (k KubeClient)CreateNamespace(namespace string)error{
 	return nil
 }
 
-func (k KubeClient)ListNamespace(namespace string)(*core_v1.Namespace,error){
+func (k KubeClient)GetNamespace(namespace string)(*core_v1.Namespace,error){
 	if namespace,err := k.Client.CoreV1().Namespaces().Get(namespace,meta_v1.GetOptions{});err != nil {
 		return nil,err
 	}else{
@@ -71,5 +71,13 @@ func (k KubeClient)DeleteNamespace(namespace string)error{
 		return err
 	}else{
 		return nil
+	}
+}
+
+func (k KubeClient)ListNamespace()([]core_v1.Namespace,error){
+	if list,err := k.Client.CoreV1().Namespaces().List(meta_v1.ListOptions{});err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
 	}
 }

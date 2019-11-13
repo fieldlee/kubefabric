@@ -154,3 +154,11 @@ func (k KubeClient)DeletePvcByYaml(yamlPath string)error{
 		return nil
 	}
 }
+
+func (k KubeClient)ListPvc(namespace string)([]core_v1.PersistentVolumeClaim,error){
+	if list, err := k.Client.CoreV1().PersistentVolumeClaims(namespace).List(meta_v1.ListOptions{}); err != nil {
+		return nil,err
+	}else{
+		return list.Items,nil
+	}
+}
